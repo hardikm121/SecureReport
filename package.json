@@ -1,15 +1,25 @@
 {
+<<<<<<< HEAD
   "name": "secure-crime-reporting",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+=======
+  "name": "secure-anonymous-reporting-platform",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite preview --port $PORT --host 0.0.0.0",  
+>>>>>>> a03f7b190a27437c1215e4dbc0e56076b9b27242
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -17,6 +27,13 @@
     "zustand": "^4.5.2",
     "date-fns": "^3.3.1",
     "react-hot-toast": "^2.4.1"
+=======
+    "axios": "^1.6.7",
+    "lucide-react": "^0.344.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.22.3"
+>>>>>>> a03f7b190a27437c1215e4dbc0e56076b9b27242
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
@@ -34,4 +51,8 @@
     "typescript-eslint": "^8.3.0",
     "vite": "^5.4.2"
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> a03f7b190a27437c1215e4dbc0e56076b9b27242
