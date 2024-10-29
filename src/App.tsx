@@ -1,44 +1,64 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import Home from './pages/Home';
-import ReportForm from './pages/ReportForm';
-import AuthorizedDashboard from './pages/AuthorizedDashboard';
-import UserDashboard from './pages/UserDashboard';
 import Login from './pages/Login';
-import Signup from './pages/Signup';
-import AadhaarValidation from './pages/AadhaarValidation';
-
-const PrivateRoute: React.FC<{ element: React.ReactElement; allowedRoles?: string[] }> = ({ element, allowedRoles }) => {
-  const { user } = useAuth();
-  if (!user) return <Navigate to="/login" />;
-  if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/" />;
-  return element;
-};
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import ReportCrime from './pages/ReportCrime';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import Footer from './components/Footer';
+import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
+import { useAuthStore } from './store/authStore';
 
 function App() {
+  const checkAuth = useAuthStore(state => state.checkAuth);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
   return (
-    <AuthProvider>
-      <Router>
-        <div className="flex flex-col min-h-screen bg-gray-100">
-          <Header />
-          <main className="flex-grow container mx-auto px-4 py-8">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/aadhaar-validation" element={<AadhaarValidation />} />
-              <Route path="/report" element={<PrivateRoute element={<ReportForm />} />} />
-              <Route path="/user-dashboard" element={<PrivateRoute element={<UserDashboard />} />} />
-              <Route path="/authorized" element={<PrivateRoute element={<AuthorizedDashboard />} allowedRoles={['admin']} />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </AuthProvider>
+    <BrowserRouter>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
+        <Navbar />
+        <main className="flex-grow container mx-auto px-4 py-8">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/report"
+              element={
+                <PrivateRoute>
+                  <ReportCrime />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 

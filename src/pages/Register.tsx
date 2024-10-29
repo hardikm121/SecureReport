@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogIn, Shield, AlertCircle } from 'lucide-react';
+import { UserPlus, Shield, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
-  const login = useAuthStore(state => state.login);
+  const register = useAuthStore(state => state.register);
   
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
   
   const [error, setError] = useState('');
@@ -19,12 +21,22 @@ const Login = () => {
     e.preventDefault();
     setError('');
 
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
     try {
       setLoading(true);
-      await login(formData.email, formData.password);
+      await register(formData.name, formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
-      setError('Invalid email or password');
+      setError('Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -34,8 +46,8 @@ const Login = () => {
     <div className="max-w-md mx-auto">
       <div className="text-center mb-8">
         <Shield className="h-12 w-12 text-indigo-600 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-        <p className="text-gray-600 mt-2">Sign in to access your dashboard</p>
+        <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
+        <p className="text-gray-600 mt-2">Join our community of vigilant citizens</p>
       </div>
 
       {error && (
@@ -46,6 +58,20 @@ const Login = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            Full Name
+          </label>
+          <input
+            type="text"
+            id="name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            required
+          />
+        </div>
+
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
             Email
@@ -74,21 +100,18 @@ const Login = () => {
           />
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="remember"
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-            />
-            <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
-              Remember me
-            </label>
-          </div>
-
-          <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
-            Forgot password?
-          </Link>
+        <div>
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            id="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            required
+          />
         </div>
 
         <button
@@ -98,14 +121,14 @@ const Login = () => {
             loading ? 'opacity-75 cursor-not-allowed' : ''
           }`}
         >
-          <LogIn className="h-5 w-5" />
-          {loading ? 'Signing in...' : 'Sign In'}
+          <UserPlus className="h-5 w-5" />
+          {loading ? 'Creating Account...' : 'Create Account'}
         </button>
 
         <p className="text-center text-sm text-gray-600">
-          Don't have an account?{' '}
-          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-            Sign up
+          Already have an account?{' '}
+          <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+            Sign in
           </Link>
         </p>
       </form>
@@ -113,4 +136,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

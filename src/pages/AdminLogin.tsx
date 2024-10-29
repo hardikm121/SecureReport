@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { LogIn, Shield, AlertCircle } from 'lucide-react';
-import { useAuthStore } from '../store/authStore';
+import { useNavigate } from 'react-router-dom';
+import { Shield, AlertCircle } from 'lucide-react';
+import { useAdminStore } from '../store/adminStore';
 
-const Login = () => {
+const AdminLogin = () => {
   const navigate = useNavigate();
-  const login = useAuthStore(state => state.login);
+  const login = useAdminStore(state => state.login);
   
   const [formData, setFormData] = useState({
     email: '',
@@ -22,9 +22,9 @@ const Login = () => {
     try {
       setLoading(true);
       await login(formData.email, formData.password);
-      navigate('/dashboard');
+      navigate('/admin/dashboard');
     } catch (err) {
-      setError('Invalid email or password');
+      setError('Invalid admin credentials');
     } finally {
       setLoading(false);
     }
@@ -33,9 +33,9 @@ const Login = () => {
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-8">
-        <Shield className="h-12 w-12 text-indigo-600 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-        <p className="text-gray-600 mt-2">Sign in to access your dashboard</p>
+        <Shield className="h-12 w-12 text-red-600 mx-auto mb-4" />
+        <h1 className="text-3xl font-bold text-gray-900">Admin Login</h1>
+        <p className="text-gray-600 mt-2">Access the admin dashboard</p>
       </div>
 
       {error && (
@@ -48,7 +48,7 @@ const Login = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email
+            Admin Email
           </label>
           <input
             type="email"
@@ -74,43 +74,18 @@ const Login = () => {
           />
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="remember"
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-            />
-            <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
-              Remember me
-            </label>
-          </div>
-
-          <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
-            Forgot password?
-          </Link>
-        </div>
-
         <button
           type="submit"
           disabled={loading}
-          className={`w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+          className={`w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
             loading ? 'opacity-75 cursor-not-allowed' : ''
           }`}
         >
-          <LogIn className="h-5 w-5" />
-          {loading ? 'Signing in...' : 'Sign In'}
+          {loading ? 'Signing in...' : 'Sign In as Admin'}
         </button>
-
-        <p className="text-center text-sm text-gray-600">
-          Don't have an account?{' '}
-          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-            Sign up
-          </Link>
-        </p>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default AdminLogin;
